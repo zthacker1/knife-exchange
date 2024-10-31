@@ -1,6 +1,7 @@
+// src/components/Login.js
 import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { loginUser, setAuthToken } from '../api';
-import { useNavigate } from 'react-router-dom';
 
 const Login = ({ setUser }) => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
@@ -18,38 +19,45 @@ const Login = ({ setUser }) => {
       const token = response.data.token;
       localStorage.setItem('token', token);
       setAuthToken(token);
-      setUser(response.data.user); // Update user state with response data if available
-      navigate('/'); // Redirect to home or profile after login
-    } catch (err) {
+      setUser(response.data.user);
+      navigate('/');
+    } catch {
       setError('Invalid credentials');
     }
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '0 auto' }}>
+    <div style={{ maxWidth: '400px', margin: '0 auto', textAlign: 'center' }}>
       <h2>Login</h2>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <form onSubmit={handleSubmit}>
-        <label>Username</label>
+        <label style={{ display: 'block', marginTop: '10px' }}>Username</label>
         <input
           type="text"
           name="username"
           value={credentials.username}
           onChange={handleInputChange}
+          placeholder="Enter your username"
+          style={{ padding: '10px', width: '100%', margin: '5px 0' }}
           required
         />
 
-        <label>Password</label>
+        <label style={{ display: 'block', marginTop: '10px' }}>Password</label>
         <input
           type="password"
           name="password"
           value={credentials.password}
           onChange={handleInputChange}
+          placeholder="Enter your password"
+          style={{ padding: '10px', width: '100%', margin: '5px 0' }}
           required
         />
 
-        <button type="submit" style={{ marginTop: '20px' }}>Login</button>
+        <button type="submit" style={{ padding: '10px 20px', marginTop: '20px' }}>Login</button>
       </form>
+      <p style={{ marginTop: '10px' }}>
+        Don't have an account? <Link to="/register">Register here</Link>
+      </p>
     </div>
   );
 };
