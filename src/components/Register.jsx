@@ -1,86 +1,74 @@
+// src/components/Register.js
 import React, { useState } from 'react';
-import { registerUser, loginUser, setAuthToken } from '../api';
 import { useNavigate } from 'react-router-dom';
+import { registerUser } from '../api';
 
 const Register = ({ setUser }) => {
-  const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-    firstName: '',
-    lastName: ''
-  });
+  const [formData, setFormData] = useState({ username: '', password: '', first_name: '', last_name: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await registerUser({
-        username: formData.username,
-        password: formData.password,
-        first_name: formData.firstName,
-        last_name: formData.lastName
-      });
-
-      // Automatically log in the user after successful registration
-      const loginResponse = await loginUser({
-        username: formData.username,
-        password: formData.password
-      });
-      const token = loginResponse.data.token;
-      localStorage.setItem('token', token);
-      setAuthToken(token);
-      setUser(loginResponse.data.user); // Set the user in App state
-      navigate('/'); // Redirect to home or profile after registration
-    } catch (err) {
-      setError('Registration failed. Please try again.');
+      const response = await registerUser(formData);
+      setUser(response.data.user);
+      navigate('/login');
+    } catch {
+      setError('Registration failed');
     }
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '0 auto' }}>
+    <div style={{ maxWidth: '400px', margin: '0 auto', textAlign: 'center' }}>
       <h2>Register</h2>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <form onSubmit={handleSubmit}>
-        <label>Username</label>
+        <label style={{ display: 'block', marginTop: '10px' }}>Username</label>
         <input
           type="text"
           name="username"
           value={formData.username}
-          onChange={handleInputChange}
+          onChange={handleChange}
+          placeholder="Choose a username"
+          style={{ padding: '10px', width: '100%', margin: '5px 0' }}
           required
         />
 
-        <label>Password</label>
+        <label style={{ display: 'block', marginTop: '10px' }}>Password</label>
         <input
           type="password"
           name="password"
           value={formData.password}
-          onChange={handleInputChange}
+          onChange={handleChange}
+          placeholder="Choose a password"
+          style={{ padding: '10px', width: '100%', margin: '5px 0' }}
           required
         />
 
-        <label>First Name</label>
+        <label style={{ display: 'block', marginTop: '10px' }}>First Name</label>
         <input
           type="text"
-          name="firstName"
-          value={formData.firstName}
-          onChange={handleInputChange}
+          name="first_name"
+          value={formData.first_name}
+          onChange={handleChange}
+          placeholder="Enter your first name"
+          style={{ padding: '10px', width: '100%', margin: '5px 0' }}
         />
 
-        <label>Last Name</label>
+        <label style={{ display: 'block', marginTop: '10px' }}>Last Name</label>
         <input
           type="text"
-          name="lastName"
-          value={formData.lastName}
-          onChange={handleInputChange}
+          name="last_name"
+          value={formData.last_name}
+          onChange={handleChange}
+          placeholder="Enter your last name"
+          style={{ padding: '10px', width: '100%', margin: '5px 0' }}
         />
 
-        <button type="submit" style={{ marginTop: '20px' }}>Register</button>
+        <button type="submit" style={{ padding: '10px 20px', marginTop: '20px' }}>Register</button>
       </form>
     </div>
   );

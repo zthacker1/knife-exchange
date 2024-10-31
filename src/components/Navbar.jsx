@@ -1,32 +1,22 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { setAuthToken } from '../api';
 
 const Navbar = ({ user, setUser }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    navigate('/logout');
+    localStorage.removeItem('token');  // Clear the token from local storage
+    setUser(null);  // Clear the user state
+    navigate('/login');  // Redirect to login page
   };
 
   return (
-    <nav>
-      <ul>
-        <li>
-          <Link to="/profile">Profile</Link>
-        </li>
-        <li>
-          <Link to="/listings">All Listings</Link>
-        </li>
-        {user?.isAdmin && (
-          <li>
-            <Link to="/users">All Users</Link>
-          </li>
-        )}
-        <li>
-          <button onClick={handleLogout}>Logout</button>
-        </li>
-      </ul>
+    <nav style={{ display: 'flex', justifyContent: 'space-around', padding: '10px', backgroundColor: '#f8f9fa' }}>
+      <Link to="/profile">Profile</Link>
+      <Link to="/listings">All Listings</Link>
+      <button onClick={handleLogout} style={{ backgroundColor: 'transparent', border: 'none', cursor: 'pointer', color: 'blue' }}>
+        Logout
+      </button>
     </nav>
   );
 };
